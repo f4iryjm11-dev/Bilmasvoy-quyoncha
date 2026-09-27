@@ -15,18 +15,24 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
 *{box-sizing:border-box;}
 html,body{height:100%;margin:0;}
-body{background:var(--bg);color:var(--ink);font-family:'Nunito',sans-serif;-webkit-font-smoothing:antialiased;}
+body{background:radial-gradient(120% 70% at 50% 0%, #FFEFD1 0%, var(--bg) 55%);color:var(--ink);font-family:'Nunito',sans-serif;-webkit-font-smoothing:antialiased;}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){--bg:#2A2420;--card:#3A322C;--ink:#F3E9DD;}
 }
 :root[data-theme="dark"]{--bg:#2A2420;--card:#3A322C;--ink:#F3E9DD;}
 
-header{text-align:center;padding:20px 14px 8px;}
-h1{font-family:'Baloo 2',sans-serif;font-size:clamp(24px,6vw,38px);margin:4px 0 0;color:#E8791A;}
+header{text-align:center;padding:22px 14px 8px;position:relative;}
+h1{font-family:'Baloo 2',sans-serif;font-size:clamp(24px,6vw,38px);margin:4px 0 0;color:#E8791A;text-shadow:0 2px 0 rgba(232,121,26,.15);letter-spacing:.3px;}
 .subtitle{margin:2px 0 8px;font-size:14px;opacity:.8;}
-#bunny{width:112px;height:144px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
-#bunny.bounce{transform:translateY(-16px) rotate(-5deg);}
-.bunny-wrap{display:flex;justify-content:center;}
+.bunny-wrap{display:flex;justify-content:center;position:relative;}
+.bunny-wrap::before{
+  content:'';position:absolute;width:150px;height:150px;top:-10px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,201,60,.35) 0%,rgba(255,201,60,0) 70%);z-index:0;
+}
+#bunny{width:112px;height:144px;position:relative;z-index:1;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);animation:breathe 3.2s ease-in-out infinite;}
+#bunny.bounce{animation:none;transform:translateY(-16px) rotate(-5deg);}
+@keyframes breathe{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-3px) scale(1.015);}}
 
 .progress-wrap{max-width:420px;margin:6px auto 4px;padding:0 16px;}
 .progress-label{font-family:'Baloo 2',sans-serif;font-size:14px;text-align:center;margin-bottom:4px;}
@@ -36,33 +42,27 @@ h1{font-family:'Baloo 2',sans-serif;font-size:clamp(24px,6vw,38px);margin:4px 0 
 nav{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:14px 12px 6px;}
 nav button{
   font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;border:none;border-radius:16px;
-  padding:9px 16px;cursor:pointer;background:var(--card);color:var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.08);
+  padding:10px 17px;cursor:pointer;background:var(--card);color:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.1);
+  transition:transform .12s, box-shadow .12s;
 }
-nav button.active{background:var(--sariq);color:#5B3A00;}
+nav button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.1);}
+nav button.active{background:linear-gradient(135deg,var(--sariq),#FFB13C);color:#5B3A00;box-shadow:0 3px 0 #C98A12;}
 
 section{display:none;max-width:760px;margin:0 auto;padding:8px 16px 50px;}
-section.show{display:block;}
+section.show{display:block;animation:sectionIn .35s ease;}
+@keyframes sectionIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 0 14px;}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px;}
 .tile{
   background:var(--card);border:none;border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  font-family:'Baloo 2',sans-serif;font-size:24px;font-weight:700;cursor:pointer;color:var(--ink);
-  box-shadow:0 3px 0 rgba(0,0,0,.08);transition:transform .15s;
+  font-family:'Baloo 2',sans-serif;font-size:25px;font-weight:800;cursor:pointer;color:#E8791A;
+  box-shadow:0 3px 0 rgba(0,0,0,.1);transition:transform .12s, box-shadow .12s;
 }
-.tile:active{transform:translateY(2px);}
-.tile.done{background:var(--yashil);color:#1e3a12;}
+.tile:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.1);}
+.tile.done{background:linear-gradient(135deg,var(--yashil),#65b856);color:#1e3a12;}
 .tile:focus-visible{outline:3px solid var(--kok);outline-offset:2px;}
 
-.words-list{display:flex;flex-direction:column;gap:10px;}
-.word-row{
-  background:var(--card);border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:16px;
-  cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.06);
-}
-.word-row .emoji{font-size:36px;}
-.word-row .txt{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700;}
-.word-row .spk{margin-left:auto;font-size:20px;opacity:.6;}
-.word-row.done{border:2px solid var(--yashil);}
 
 .syll-board{display:flex;flex-direction:column;align-items:center;gap:18px;}
 .syll-row{display:flex;gap:10px;align-items:center;}
@@ -73,10 +73,18 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
 .plus{font-size:20px;opacity:.5;}
 .syll-result{
   font-family:'Baloo 2',sans-serif;font-size:32px;font-weight:800;color:var(--pushti);min-height:44px;
-  display:flex;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:8px;border-radius:16px;padding:6px 18px;transition:background .2s;
 }
+.syll-result.mark-green{background:rgba(123,201,111,.25);color:#2f6b1f;}
+.syll-result.mark-red{background:rgba(246,179,179,.4);color:#a33636;}
 .syll-fly{animation:flyIn .5s ease;}
 @keyframes flyIn{from{transform:scale(0.3);opacity:0;}to{transform:scale(1);opacity:1;}}
+.tf-btns{display:flex;gap:12px;}
+.tf-btn{
+  border:none;border-radius:16px;padding:12px 20px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:16px;cursor:pointer;
+}
+.tf-green{background:var(--yashil);color:#1e3a12;}
+.tf-red{background:#F6B3B3;color:#7a1f1f;}
 .next-btn{
   background:var(--kok);color:#06323f;border:none;border-radius:14px;padding:10px 22px;font-family:'Baloo 2',sans-serif;
   font-weight:700;font-size:15px;cursor:pointer;
@@ -88,16 +96,31 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
 .opt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:360px;margin:0 auto;}
 .opt-btn{
   background:#F3F9FC;border:2px solid transparent;border-radius:14px;padding:16px 0;
-  font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700;cursor:pointer;color:#C2185B;
+  font-family:'Baloo 2',sans-serif;font-size:24px;font-weight:800;cursor:pointer;color:#8B1E1E;
+  box-shadow:0 3px 0 rgba(0,0,0,.08);transition:transform .12s;
 }
+.opt-btn:active{transform:translateY(2px);}
 .opt-btn.correct{background:var(--yashil);border-color:#4c9a3d;color:#1e3a12;}
-.opt-btn.wrong{background:#F6B3B3;border-color:#c94848;color:#7a1414;}
+.opt-btn.wrong{background:#F6B3B3;border-color:#c94848;color:#7a1f1f;}
 .speak-btn{
   background:var(--pushti);color:#5a0a2b;border:none;border-radius:50%;width:64px;height:64px;font-size:26px;
   cursor:pointer;margin-bottom:14px;
 }
+.match-board{display:flex;gap:16px;max-width:420px;margin:0 auto;}
+.match-col{flex:1;display:flex;flex-direction:column;gap:8px;}
+.match-opt{
+  background:#F3F9FC;border:2px solid transparent;border-radius:12px;padding:12px 8px;
+  font-family:'Baloo 2',sans-serif;font-weight:800;font-size:15px;cursor:pointer;color:var(--ink);width:100%;
+  box-shadow:0 2px 0 rgba(0,0,0,.06);transition:transform .12s;
+}
+#matchLetters .match-opt{color:#8B1E1E;font-size:20px;}
+.match-opt:active{transform:translateY(1px);}
+.match-opt.selected{border-color:var(--binafsha);}
+.match-opt.correct{background:var(--yashil);border-color:#4c9a3d;color:#1e3a12;}
+.match-opt.wrong{background:#F6B3B3;border-color:#c94848;color:#7a1f1f;}
+.match-opt.disabled{opacity:.35;pointer-events:none;}
 .score-line{font-family:'Baloo 2',sans-serif;font-size:14px;margin-top:12px;opacity:.75;}
-.game-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:14px;}
+.game-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
 .game-tabs button{
   font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;border:none;border-radius:12px;padding:7px 14px;
   background:#fff;color:var(--ink);cursor:pointer;
@@ -132,74 +155,52 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
 <header>
   <div class="bunny-wrap">
     <svg id="bunny" viewBox="0 0 140 180" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="furGrad" cx="40%" cy="30%" r="80%">
-          <stop offset="0%" stop-color="#FFFFFF"/>
-          <stop offset="100%" stop-color="#FFE9D6"/>
-        </radialGradient>
-        <linearGradient id="earGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#FF9EC4"/>
-          <stop offset="100%" stop-color="#FF6FA5"/>
-        </linearGradient>
-        <radialGradient id="cheekGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#FFB3CB"/>
-          <stop offset="100%" stop-color="#FFB3CB" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
       <!-- tail -->
-      <circle cx="32" cy="168" r="11" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2"/>
-      <circle cx="25" cy="161" r="5" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.2"/>
-      <circle cx="40" cy="159" r="5" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.2"/>
+      <circle cx="32" cy="168" r="11" fill="#fff" stroke="#eadfd6" stroke-width="2"/>
+      <circle cx="25" cy="161" r="5" fill="#fff" stroke="#eadfd6" stroke-width="1.2"/>
+      <circle cx="40" cy="159" r="5" fill="#fff" stroke="#eadfd6" stroke-width="1.2"/>
       <!-- feet -->
-      <ellipse cx="55" cy="178" rx="13" ry="7" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2"/>
-      <ellipse cx="90" cy="178" rx="13" ry="7" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2"/>
-      <ellipse cx="55" cy="179" rx="6" ry="2.6" fill="#FFC7DA" opacity=".7"/>
-      <ellipse cx="90" cy="179" rx="6" ry="2.6" fill="#FFC7DA" opacity=".7"/>
+      <ellipse cx="55" cy="178" rx="13" ry="7" fill="#fff" stroke="#eadfd6" stroke-width="2"/>
+      <ellipse cx="90" cy="178" rx="13" ry="7" fill="#fff" stroke="#eadfd6" stroke-width="2"/>
       <!-- body -->
-      <ellipse cx="70" cy="148" rx="38" ry="34" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2"/>
-      <ellipse cx="70" cy="153" rx="23" ry="21" fill="#FFF6E9" opacity=".8"/>
-      <!-- bow -->
-      <path d="M70,131 L55,120 Q50,127 55,134 Z" fill="var(--binafsha)" stroke="#8f6fd1" stroke-width="1.2"/>
-      <path d="M70,131 L85,120 Q90,127 85,134 Z" fill="var(--binafsha)" stroke="#8f6fd1" stroke-width="1.2"/>
-      <circle cx="70" cy="131" r="5.5" fill="var(--pushti)" stroke="#d15f88" stroke-width="1.2"/>
+      <ellipse cx="70" cy="148" rx="38" ry="34" fill="#fff" stroke="#eadfd6" stroke-width="2"/>
+      <ellipse cx="70" cy="153" rx="23" ry="21" fill="#F7F0EA" opacity=".55"/>
       <!-- resting paw -->
-      <ellipse cx="53" cy="151" rx="13" ry="9" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.5" transform="rotate(-15 53 151)"/>
+      <ellipse cx="53" cy="151" rx="13" ry="9" fill="#fff" stroke="#eadfd6" stroke-width="1.5" transform="rotate(-15 53 151)"/>
       <!-- waving arm + paw -->
-      <ellipse cx="104" cy="123" rx="9" ry="20" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.5" transform="rotate(28 104 123)"/>
-      <circle cx="111" cy="100" r="10" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.5"/>
+      <ellipse cx="104" cy="123" rx="9" ry="20" fill="#fff" stroke="#eadfd6" stroke-width="1.5" transform="rotate(28 104 123)"/>
+      <circle cx="111" cy="100" r="10" fill="#fff" stroke="#eadfd6" stroke-width="1.5"/>
       <!-- ears -->
-      <ellipse cx="50" cy="34" rx="14" ry="46" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2" transform="rotate(-13 50 34)"/>
-      <ellipse cx="50" cy="38" rx="6" ry="30" fill="url(#earGrad)" transform="rotate(-13 50 34)"/>
-      <ellipse cx="90" cy="34" rx="14" ry="46" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2" transform="rotate(13 90 34)"/>
-      <ellipse cx="90" cy="38" rx="6" ry="30" fill="url(#earGrad)" transform="rotate(13 90 34)"/>
+      <ellipse cx="50" cy="34" rx="14" ry="46" fill="#fff" stroke="#eadfd6" stroke-width="2" transform="rotate(-13 50 34)"/>
+      <ellipse cx="50" cy="38" rx="6" ry="30" fill="#FFC7DA" transform="rotate(-13 50 34)"/>
+      <ellipse cx="90" cy="34" rx="14" ry="46" fill="#fff" stroke="#eadfd6" stroke-width="2" transform="rotate(13 90 34)"/>
+      <ellipse cx="90" cy="38" rx="6" ry="30" fill="#FFC7DA" transform="rotate(13 90 34)"/>
       <!-- head -->
-      <circle cx="70" cy="78" r="40" fill="url(#furGrad)" stroke="#E8B896" stroke-width="2"/>
-      <path d="M62,42 L66,32 L70,42 L74,32 L78,42 Z" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1.5"/>
+      <circle cx="70" cy="78" r="40" fill="#fff" stroke="#eadfd6" stroke-width="2"/>
+      <path d="M62,42 L66,32 L70,42 L74,32 L78,42 Z" fill="#fff" stroke="#eadfd6" stroke-width="1.5"/>
       <!-- fluff bumps -->
-      <circle cx="33" cy="70" r="5" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1"/>
-      <circle cx="107" cy="70" r="5" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1"/>
-      <circle cx="30" cy="130" r="6" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1"/>
-      <circle cx="112" cy="135" r="6" fill="url(#furGrad)" stroke="#E8B896" stroke-width="1"/>
+      <circle cx="33" cy="70" r="5" fill="#fff" stroke="#eadfd6" stroke-width="1"/>
+      <circle cx="107" cy="70" r="5" fill="#fff" stroke="#eadfd6" stroke-width="1"/>
+      <circle cx="30" cy="130" r="6" fill="#fff" stroke="#eadfd6" stroke-width="1"/>
+      <circle cx="112" cy="135" r="6" fill="#fff" stroke="#eadfd6" stroke-width="1"/>
       <!-- cheeks -->
-      <circle cx="41" cy="90" r="10" fill="url(#cheekGrad)"/>
-      <circle cx="99" cy="90" r="10" fill="url(#cheekGrad)"/>
+      <circle cx="41" cy="90" r="8" fill="#FFC7DA" opacity=".85"/>
+      <circle cx="99" cy="90" r="8" fill="#FFC7DA" opacity=".85"/>
       <!-- eyes -->
-      <path d="M45,63 L50,68" stroke="#3B2A22" stroke-width="2" stroke-linecap="round"/>
-      <path d="M43,68 L47,71" stroke="#3B2A22" stroke-width="2" stroke-linecap="round"/>
-      <ellipse cx="56" cy="76" rx="7.5" ry="8.5" fill="#3B2A22"/>
-      <circle cx="53.2" cy="72" r="2.4" fill="#fff"/>
-      <circle cx="58.5" cy="80" r="1.3" fill="#fff" opacity=".8"/>
-      <ellipse cx="86" cy="76" rx="7.5" ry="8.5" fill="#3B2A22"/>
-      <circle cx="83.2" cy="72" r="2.4" fill="#fff"/>
-      <circle cx="88.5" cy="80" r="1.3" fill="#fff" opacity=".8"/>
+      <path d="M45,64 L50,69" stroke="#3B2A22" stroke-width="2" stroke-linecap="round"/>
+      <path d="M43,69 L47,72" stroke="#3B2A22" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="56" cy="76" r="7.5" fill="#3B2A22"/>
+      <circle cx="53.3" cy="72.8" r="2.1" fill="#fff"/>
+      <circle cx="86" cy="76" r="7.5" fill="#3B2A22"/>
+      <circle cx="83.3" cy="72.8" r="2.1" fill="#fff"/>
       <!-- nose + mouth + tongue -->
-      <ellipse cx="71" cy="88" rx="3.5" ry="2.5" fill="#F2789A"/>
+      <ellipse cx="71" cy="88" rx="3.5" ry="2.5" fill="#F2A9B8"/>
       <path d="M60,92 Q66,99 71,92 Q76,99 82,92" stroke="#3B2A22" stroke-width="2.2" fill="none" stroke-linecap="round"/>
       <ellipse cx="71" cy="99" rx="6" ry="5.5" fill="#FF9EB0"/>
       <!-- whiskers -->
-      <line x1="104" y1="87" x2="119" y2="82" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="105" y1="91" x2="120" y2="91" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="104" y1="95" x2="119" y2="100" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="104" y1="87" x2="117" y2="83" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="105" y1="91" x2="118" y2="91" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="104" y1="95" x2="117" y2="99" stroke="#d8b9a8" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
   </div>
   <h1>Quyoncha bilan Alifbo</h1>
@@ -213,7 +214,6 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
 <nav>
   <button class="tab-btn active" data-t="letters">🔤 Harflar dunyosi</button>
   <button class="tab-btn" data-t="syll">🧩 Bo'g'inlar</button>
-  <button class="tab-btn" data-t="words">📖 So'zlarim</button>
   <button class="tab-btn" data-t="games">🎮 O'yinlar</button>
   <button class="tab-btn" data-t="parent">👪 Ota-onalar</button>
 </nav>
@@ -228,20 +228,20 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
   <div class="syll-board">
     <div class="syll-row" id="syllPair"></div>
     <div class="syll-result" id="syllResult"></div>
+    <div class="tf-btns">
+      <button class="tf-btn tf-green" id="tfCorrect">💚 To'g'ri</button>
+      <button class="tf-btn tf-red" id="tfWrong">❤️ Noto'g'ri</button>
+    </div>
     <button class="next-btn" id="syllNext">Keyingisi ➜</button>
   </div>
-</section>
-
-<section id="words">
-  <h2>So'zlarni o'qib, tinglab ko'r</h2>
-  <div class="words-list" id="wordsList"></div>
 </section>
 
 <section id="games">
   <h2>O'ynab, bilimingni sinab ko'r</h2>
   <div class="game-tabs">
     <button class="gt-btn active" data-g="find">Harfni toping</button>
-    <button class="gt-btn" data-g="hear">Ovozdan toping</button>
+    <button class="gt-btn" data-g="order">Ketma-ketlik</button>
+    <button class="gt-btn" data-g="match">Harf-so'z bog'lash</button>
   </div>
   <div class="game-card">
     <div id="gameFind">
@@ -249,10 +249,17 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
       <div class="clue-word" id="findWord">Baliq — qaysi harf?</div>
       <div class="opt-grid" id="findOpts"></div>
     </div>
-    <div id="gameHear" style="display:none;">
-      <button class="speak-btn" id="hearBtn">🔊</button>
-      <div class="clue-word">Ovozni eshit va harfni top</div>
-      <div class="opt-grid" id="hearOpts"></div>
+    <div id="gameOrder" style="display:none;">
+      <div class="clue-word" id="orderSeq" style="font-size:32px;letter-spacing:3px;">A · B · ? · D</div>
+      <div class="clue-word">Bo'sh joyga qaysi harf keladi?</div>
+      <div class="opt-grid" id="orderOpts"></div>
+    </div>
+    <div id="gameMatch" style="display:none;">
+      <div class="clue-word">Harfni mos so'zi bilan bog'la</div>
+      <div class="match-board">
+        <div class="match-col" id="matchLetters"></div>
+        <div class="match-col" id="matchWords"></div>
+      </div>
     </div>
     <div class="score-line">To'g'ri javoblar: <span id="scoreCount">0</span></div>
   </div>
@@ -266,7 +273,7 @@ h2{font-family:'Baloo 2',sans-serif;font-size:20px;text-align:center;margin:6px 
     <b>Progress:</b> Bola hozircha <span id="parentLetters">0</span>/29 harfni o'rgangan, jami <span id="parentStars">0</span> yulduz to'plagan.
   </div>
   <div class="parent-box">
-    <b>Keyingi qadam:</b> Harf yozish (barmoq bilan chizish), rasm-so'z bog'lash o'yini va bosib chiqariladigan varaqlar tez orada qo'shiladi.
+    <b>Keyingi qadam:</b> Harf yozish (barmoq bilan chizish) va bosib chiqariladigan varaqlar tez orada qo'shiladi.
   </div>
 </section>
 
@@ -293,19 +300,16 @@ const letters = [
 ["O'","O'rik","🍑"],["G'","G'oz","🦢"],["Sh","Shakar","🍬"],["Ch","Choy","🍵"],["Ng","Singil","👧"]
 ];
 const syllPairs = [["B","A"],["S","U"],["T","O"],["M","I"],["Q","O'"],["D","E"],["L","O"],["N","I"]];
-const words = [["OT","🐴"],["IT","🐶"],["UY","🏠"],["OY","🌙"],["ARI","🐝"],["SUV","💧"]];
 
-let stars = 0, learnedLetters = {}, wordsDone = {}, syllSeen = {}, gameScore = 0;
+let stars = 0, learnedLetters = {}, syllSeen = {}, gameScore = 0;
 try{ stars = parseInt(localStorage.getItem('q-stars')||'0'); }catch(e){}
 try{ learnedLetters = JSON.parse(localStorage.getItem('q-learned')||'{}'); }catch(e){}
-try{ wordsDone = JSON.parse(localStorage.getItem('q-words')||'{}'); }catch(e){}
 try{ gameScore = parseInt(localStorage.getItem('q-score')||'0'); }catch(e){}
 
 function save(){
   try{
     localStorage.setItem('q-stars', stars);
     localStorage.setItem('q-learned', JSON.stringify(learnedLetters));
-    localStorage.setItem('q-words', JSON.stringify(wordsDone));
     localStorage.setItem('q-score', gameScore);
   }catch(e){}
 }
@@ -348,13 +352,45 @@ function speak(text){
     const synth = speechSynthesis;
     if(synth.paused) synth.resume();
     if(synth.speaking) synth.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    const v = pickVoice();
-    if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
-    u.rate = 0.85; u.volume = 1;
-    synth.speak(u);
+    setTimeout(()=>{
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        const v = pickVoice();
+        if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+        u.rate = 0.85; u.volume = 1;
+        synth.speak(u);
+      }catch(e){}
+    }, 40);
   }catch(e){}
 }
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; }
+  }
+  if(audioCtx && audioCtx.state === 'suspended'){ try{ audioCtx.resume(); }catch(e){} }
+  return audioCtx;
+}
+function playTone(freqs, dur, type){
+  const ctx = getCtx();
+  if(!ctx) return;
+  try{
+    let t = ctx.currentTime;
+    freqs.forEach(f=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type; osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.28, t+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t+dur+0.02);
+      t += dur*0.85;
+    });
+  }catch(e){}
+}
+function playCorrect(){ playTone([523.25,659.25,783.99], 0.16, 'triangle'); }
+function playWrong(){ playTone([220,160], 0.22, 'sawtooth'); }
 function bounceBunny(){
   const b = document.getElementById('bunny');
   b.classList.add('bounce'); setTimeout(()=>b.classList.remove('bounce'),400);
@@ -395,10 +431,10 @@ function openLetter(item, btn){
   document.getElementById('pLetter').textContent = item[0];
   document.getElementById('pEmoji').textContent = item[2];
   document.getElementById('pWord').textContent = item[1];
-  document.getElementById('pSpeak').onclick = ()=>speak(item[0]+', '+item[1]);
+  document.getElementById('pSpeak').onclick = ()=>speak(item[0]);
   document.getElementById('overlay').classList.add('show');
   bounceBunny();
-  speak(item[0]+', '+item[1]);
+  speak(item[0]);
   if(!learnedLetters[item[0]]){
     learnedLetters[item[0]] = true; btn.classList.add('done'); addStar(1);
     if(Object.keys(learnedLetters).length === letters.length) celebrate("Barcha harflarni bildingiz! 🎉");
@@ -409,6 +445,7 @@ document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id=
 
 // Syllables
 let syllIdx = 0;
+let currentPairKey = null;
 function renderSyll(){
   const pair = syllPairs[syllIdx % syllPairs.length];
   const row = document.getElementById('syllPair');
@@ -418,38 +455,39 @@ function renderSyll(){
   const t2 = document.createElement('div'); t2.className='syll-tile'; t2.textContent=pair[1];
   t1.onclick = t2.onclick = ()=>combine(pair);
   row.append(t1, plus, t2);
-  document.getElementById('syllResult').textContent = '';
+  const res = document.getElementById('syllResult');
+  res.className = 'syll-result';
+  res.textContent = '';
+  currentPairKey = null;
 }
 function combine(pair){
   const res = document.getElementById('syllResult');
   const word = pair[0]+pair[1];
+  res.className = 'syll-result';
   res.innerHTML = '<span class="syll-fly">'+word+'</span> 🐰';
-  speak(word);
   bounceBunny();
-  const key = pair.join('');
-  if(!syllSeen[key]){
-    syllSeen[key] = true; addStar(1);
-    if(Object.keys(syllSeen).length === syllPairs.length) celebrate("Bo'g'inlar bo'limi tugadi! 🎉");
+  currentPairKey = pair.join('');
+}
+function markSyll(isCorrect){
+  if(!currentPairKey) return;
+  const res = document.getElementById('syllResult');
+  res.classList.remove('mark-green','mark-red');
+  res.classList.add(isCorrect ? 'mark-green' : 'mark-red');
+  bounceBunny();
+  if(isCorrect){
+    playCorrect();
+    if(!syllSeen[currentPairKey]){
+      syllSeen[currentPairKey] = true; addStar(1);
+      if(Object.keys(syllSeen).length === syllPairs.length) celebrate("Bo'g'inlar bo'limi tugadi! 🎉");
+    }
+  } else {
+    playWrong();
   }
 }
+document.getElementById('tfCorrect').onclick = ()=>markSyll(true);
+document.getElementById('tfWrong').onclick = ()=>markSyll(false);
 document.getElementById('syllNext').onclick = ()=>{ syllIdx++; renderSyll(); };
 renderSyll();
-
-// Words
-const wordsList = document.getElementById('wordsList');
-words.forEach(w=>{
-  const row = document.createElement('div');
-  row.className = 'word-row' + (wordsDone[w[0]] ? ' done' : '');
-  row.innerHTML = '<div class="emoji">'+w[1]+'</div><div class="txt">'+w[0]+'</div><div class="spk">🔊</div>';
-  row.onclick = ()=>{
-    speak(w[0]); bounceBunny();
-    if(!wordsDone[w[0]]){
-      wordsDone[w[0]] = true; row.classList.add('done'); addStar(1); save();
-      if(Object.keys(wordsDone).length === words.length) celebrate("Birinchi so'zlaring tugadi! 🎉");
-    }
-  };
-  wordsList.appendChild(row);
-});
 
 // Games: find letter by picture
 function pickOptions(correctIdx){
@@ -457,9 +495,8 @@ function pickOptions(correctIdx){
   while(idxs.size < 4) idxs.add(Math.floor(Math.random()*letters.length));
   return [...idxs].sort(()=>Math.random()-0.5);
 }
-let findTarget = 0, findLocked = false;
+let findTarget = 0;
 function newFindRound(){
-  findLocked = false;
   findTarget = Math.floor(Math.random()*letters.length);
   const item = letters[findTarget];
   document.getElementById('findEmoji').textContent = item[2];
@@ -469,59 +506,102 @@ function newFindRound(){
   opts.forEach(i=>{
     const b = document.createElement('button');
     b.className = 'opt-btn'; b.textContent = letters[i][0];
-    b.onclick = ()=>{ speak(letters[i][0]); answerFind(i, b); };
+    b.onclick = ()=> answerFind(i, b);
     box.appendChild(b);
   });
 }
 function answerFind(i, btn){
-  if(findLocked) return;
   if(i === findTarget){
-    findLocked = true;
-    btn.classList.add('correct'); gameScore++; addStar(1); bounceBunny(); save();
+    btn.classList.add('correct'); gameScore++; addStar(1); bounceBunny(); playCorrect(); save();
     if(gameScore % 5 === 0) celebrate("5 ta to'g'ri javob! 🎉");
     setTimeout(newFindRound, 700);
   } else {
-    if(btn.classList.contains('wrong')) return;
-    btn.classList.add('wrong'); setTimeout(()=>btn.classList.remove('wrong'), 500);
+    btn.classList.add('wrong'); playWrong(); setTimeout(()=>btn.classList.remove('wrong'), 500);
   }
 }
 newFindRound();
 
-let hearTarget = 0, hearLocked = false;
-function newHearRound(){
-  hearLocked = false;
-  hearTarget = Math.floor(Math.random()*letters.length);
-  const opts = pickOptions(hearTarget);
-  const box = document.getElementById('hearOpts'); box.innerHTML = '';
-  opts.forEach(i=>{
+let orderTarget = 0;
+function newOrderRound(){
+  const i = 1 + Math.floor(Math.random()*(letters.length-2));
+  orderTarget = i;
+  document.getElementById('orderSeq').textContent = letters[i-1][0] + '  ·  ?  ·  ' + letters[i+1][0];
+  const opts = pickOptions(i);
+  const box = document.getElementById('orderOpts'); box.innerHTML = '';
+  opts.forEach(idx=>{
     const b = document.createElement('button');
-    b.className = 'opt-btn'; b.textContent = letters[i][0];
-    b.onclick = ()=>{ speak(letters[i][0]); answerHear(i, b); };
+    b.className = 'opt-btn'; b.textContent = letters[idx][0];
+    b.onclick = ()=> answerOrder(idx, b);
     box.appendChild(b);
   });
 }
-document.getElementById('hearBtn').onclick = ()=> speak(letters[hearTarget][0]);
-function answerHear(i, btn){
-  if(hearLocked) return;
-  if(i === hearTarget){
-    hearLocked = true;
-    btn.classList.add('correct'); gameScore++; addStar(1); bounceBunny(); save();
-    if(gameScore % 5 === 0) celebrate("Ajoyib eshitish qobiliyati! 🎉");
-    setTimeout(newHearRound, 700);
+function answerOrder(idx, btn){
+  if(idx === orderTarget){
+    btn.classList.add('correct'); gameScore++; addStar(1); bounceBunny(); playCorrect(); save();
+    if(gameScore % 5 === 0) celebrate("Ketma-ketlikni ajoyib bilasiz! 🎉");
+    setTimeout(newOrderRound, 700);
   } else {
-    if(btn.classList.contains('wrong')) return;
-    btn.classList.add('wrong'); setTimeout(()=>btn.classList.remove('wrong'), 500);
+    btn.classList.add('wrong'); playWrong(); setTimeout(()=>btn.classList.remove('wrong'), 500);
   }
 }
-newHearRound();
+newOrderRound();
+
+// Match game: letter <-> word, no speech
+let matchLetterSel = null, matchWordSel = null, matchPool = [], matchDone = 0;
+function newMatchRound(){
+  matchDone = 0; matchLetterSel = null; matchWordSel = null;
+  const idxs = new Set();
+  while(idxs.size < 5) idxs.add(Math.floor(Math.random()*letters.length));
+  matchPool = [...idxs];
+  const letterCol = document.getElementById('matchLetters'); letterCol.innerHTML = '';
+  const wordCol = document.getElementById('matchWords'); wordCol.innerHTML = '';
+  [...matchPool].sort(()=>Math.random()-0.5).forEach(i=>{
+    const b = document.createElement('button');
+    b.className = 'match-opt'; b.textContent = letters[i][0];
+    b.onclick = ()=> selectMatch('letter', i, b);
+    letterCol.appendChild(b);
+  });
+  [...matchPool].sort(()=>Math.random()-0.5).forEach(i=>{
+    const b = document.createElement('button');
+    b.className = 'match-opt'; b.textContent = letters[i][1];
+    b.onclick = ()=> selectMatch('word', i, b);
+    wordCol.appendChild(b);
+  });
+}
+function selectMatch(side, i, btn){
+  if(btn.classList.contains('disabled')) return;
+  const colId = side === 'letter' ? 'matchLetters' : 'matchWords';
+  document.querySelectorAll('#'+colId+' .match-opt').forEach(x=>x.classList.remove('selected'));
+  btn.classList.add('selected');
+  if(side === 'letter') matchLetterSel = {i, btn}; else matchWordSel = {i, btn};
+  if(matchLetterSel && matchWordSel) checkMatch();
+}
+function checkMatch(){
+  const ok = matchLetterSel.i === matchWordSel.i;
+  const lb = matchLetterSel.btn, wb = matchWordSel.btn;
+  if(ok){
+    lb.classList.add('correct','disabled'); wb.classList.add('correct','disabled');
+    gameScore++; matchDone++; addStar(1); bounceBunny(); playCorrect(); save();
+    matchLetterSel = null; matchWordSel = null;
+    if(matchDone === matchPool.length) celebrate("Ajoyib! Barchasini bog'lading! 🎉");
+    setTimeout(()=>{ if(matchDone === matchPool.length) newMatchRound(); }, matchDone === matchPool.length ? 1300 : 0);
+  } else {
+    lb.classList.add('wrong'); wb.classList.add('wrong'); playWrong();
+    setTimeout(()=>{
+      lb.classList.remove('wrong','selected'); wb.classList.remove('wrong','selected');
+      matchLetterSel = null; matchWordSel = null;
+    }, 550);
+  }
+}
 
 document.querySelectorAll('.gt-btn').forEach(b=>{
   b.onclick = ()=>{
     document.querySelectorAll('.gt-btn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    const find = b.dataset.g === 'find';
-    document.getElementById('gameFind').style.display = find ? 'block' : 'none';
-    document.getElementById('gameHear').style.display = find ? 'none' : 'block';
+    document.getElementById('gameFind').style.display = b.dataset.g === 'find' ? 'block' : 'none';
+    document.getElementById('gameOrder').style.display = b.dataset.g === 'order' ? 'block' : 'none';
+    document.getElementById('gameMatch').style.display = b.dataset.g === 'match' ? 'block' : 'none';
+    if(b.dataset.g === 'match' && !matchPool.length) newMatchRound();
   };
 });
 
